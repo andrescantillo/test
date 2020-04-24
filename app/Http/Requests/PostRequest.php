@@ -28,4 +28,13 @@ class PostRequest extends FormRequest
             'body' => 'required',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'title.required' => 'Write a title for the publication',
+            'body.required'  => 'Write the text of the publication',
+            'title.unique'  => 'This title already exists',
+        ];
+    }
 }

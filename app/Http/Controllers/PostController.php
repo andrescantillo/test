@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Post;
 use DB;
 
 class PostController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        $this->middleware('auth', ['only' => ['store']]);
+        
+    }
 
     public function show($id) {
         $post = Post::findOrFail($id);
@@ -21,7 +32,7 @@ class PostController extends Controller
 
     public function index() {
         DB::statement('PRAGMA foreign_keys = ON;');
-        $posts = Post::all();
+        $posts = Post::orderBy('id', 'desc')->paginate(5);
         return view('post/list', ['posts' => $posts]);
     }
 
@@ -30,7 +41,7 @@ class PostController extends Controller
         Post::create([
             'title' => $request->title,
             'body' => $request->body,
-            'user_id' => 1
+            'user_id' => Auth::id(),
         ]);
 
         return redirect('posts');
@@ -39,6 +50,7 @@ class PostController extends Controller
     public function edit(Request $request) {
 
         $post = Post::findOrFail($request->id);
+        $this->authorize('update', $post);
         return view('post/update', ['post' => $post]);
 
     }
@@ -46,6 +58,7 @@ class PostController extends Controller
     public function update(PostRequest $request) {
 
         $post = Post::findOrFail($request->id);
+        $this->authorize('update', $post);
         $post->update([
         'title' => $request->title,
         'body' => $request->body
@@ -57,6 +70,7 @@ class PostController extends Controller
     public function destroy(Request $request) {
 
         $post = Post::findOrFail($request->id);
+        $this->authorize('delete', $post);
         $post->delete();
         return redirect('posts');
     }
