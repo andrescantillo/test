@@ -19,7 +19,7 @@
                               <label for="body" class="sr-only">{{ __('Body') }}</label>
                               <textarea type="text" class="form-control" id="body" name="body" placeholder="{{ __('Write the content') }}"></textarea>
                           </div>
-                          <button type="submit" class="btn btn-success">{{ __('Save') }}</button>
+                          <button type="submit" id="save" name="save" class="btn btn-success">{{ __('Save') }}</button>
                     </form>
                     
                     <br>
